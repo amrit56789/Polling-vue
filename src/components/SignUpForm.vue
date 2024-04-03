@@ -46,8 +46,10 @@
         </span>
         <p v-if="errors.confirmPassword" class="text-red-500 text-sm mt-1 text-left">{{ errors.confirmPassword }}</p>
     </div>
-
-    <button type="submit" class="btn">Sign Up</button>
+    <button type="submit" class="btn flex justify-center items-center" :disabled="isSubmitting">
+        <span v-if="!isSubmitting">Sign Up</span>
+        <div v-else class="button-loader"></div>
+    </button>
 </form>
 </template>
 
@@ -70,6 +72,7 @@ export default {
     setup() {
         const toast = useToast();
         const authStore = useAuthStore();
+        const isSubmitting = ref(false);
         const {
             validateForm
         } = useValidation();
@@ -101,12 +104,19 @@ export default {
             showConfirmPassword.value = !showConfirmPassword.value;
         };
 
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
         const submitForm = async () => {
+            isSubmitting.value = true;
+            await delay(4000)
             if (!validateForm(form, errors)) {
+                isSubmitting.value = false;
                 return;
             }
 
-            await authStore.signup(form.value);
+            await authStore.signup(form.value).finally(() => {
+                isSubmitting.value = false;
+            });
             if (authStore.user) {
                 toast.open({
                     message: 'User successfully signed up',
@@ -126,12 +136,19 @@ export default {
             togglePasswordVisibility,
             toggleConfirmPasswordVisibility,
             submitForm,
+            isSubmitting
         };
     },
 };
 </script>
 
 <style scoped>
+form {
+    width: 30%;
+    background-color: #FFFFFF;
+    padding: 20px 40px;
+}
+
 .input {
     width: 100%;
     padding: 0.5rem;
@@ -159,17 +176,39 @@ export default {
 }
 
 .btn {
-    background-color: #4f46e5;
+    background-color: #1DB75F;
     color: white;
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.25rem;
     cursor: pointer;
     width: 100%;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-loader {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
 }
 
 .btn:hover {
-    background-color: #4338ca;
+    background-color: #23824c;
 }
 
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 </style>

@@ -104,11 +104,9 @@ export default {
             showConfirmPassword.value = !showConfirmPassword.value;
         };
 
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         const submitForm = async () => {
             isSubmitting.value = true;
-            await delay(4000)
             if (!validateForm(form, errors)) {
                 isSubmitting.value = false;
                 return;

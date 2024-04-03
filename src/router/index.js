@@ -1,22 +1,27 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import SignUpForm from '../components/SignUpForm.vue'
-
+import { createRouter, createWebHashHistory } from 'vue-router';
+import SignUpForm from '../Views/SignUpForm.vue';
+import LoginForm from "../Views/LoginForm.vue";
 
 const routes = [
     {
         path: '/',
         redirect: '/signup'
-      },
-      {
+    },
+    {
         path: '/signup',
         name: 'signup',
         component: SignUpForm
-      },
-]
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: LoginForm
+    },
+];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes
-})
+});
 
-export default router
+export default router;

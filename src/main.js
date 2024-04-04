@@ -10,4 +10,5 @@ import router from './router/index'
 const pinia = createPinia()
 app.use(pinia)
 app.use(VueToast);
+
 createApp(App).use(router).mount('#app')

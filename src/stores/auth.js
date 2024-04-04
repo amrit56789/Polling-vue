@@ -1,9 +1,8 @@
-import { reactive, toRef } from 'vue';
+import { reactive, toRefs } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
 const apiUrl = process.env.VUE_APP_API_BASE_URL;
-
 export const useAuthStore = defineStore('auth', () => {
     const state = reactive({
         user: null,
@@ -52,7 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const fetchRoles = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VUE_APP_API_BASE_URL}/role/list`);
+            const response = await axios.get(`${apiUrl}/role/list`);
             state.roles = response.data;
         } catch (err) {
             console.log('Failed to fetch roles:', err);
@@ -68,7 +67,7 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     return {
-        ...toRef(state),
+        ...toRefs(state),
         resetError,
         signUp,
         login,

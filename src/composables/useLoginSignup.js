@@ -4,14 +4,11 @@ import { useValidation } from './useValidation';
 
 function useToggleVisibility() {
     const isVisible = ref(false);
-
     const toggleVisibility = () => {
         isVisible.value = !isVisible.value;
     };
-
     return { isVisible, toggleVisibility };
 }
-
 
 export function useLogin() {
     const authStore = useAuthStore();
@@ -29,7 +26,6 @@ export function useLogin() {
     });
 
     const isSubmitting = ref(false);
-
     const submitLogin = async () => {
         isSubmitting.value = true;
         if (!validateForm(form, errors, true)) {
@@ -48,7 +44,6 @@ export function useLogin() {
             isSubmitting.value = false;
         }
     };
-
     return {
         form,
         errors,
@@ -83,14 +78,12 @@ export function useSignup() {
     });
 
     const isSubmitting = ref(false);
-
     const submitSignup = async () => {
         isSubmitting.value = true;
         if (!validateForm(form, errors, false)) {
             isSubmitting.value = false;
             return false;
         }
-
         try {
             await authStore.signUp(form.value);
             Object.keys(form.value).forEach(key => form.value[key] = '');

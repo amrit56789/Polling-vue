@@ -23,7 +23,8 @@
             <span v-if="!isSubmitting">Login</span>
             <div v-else class="button-loader"></div>
         </button>
-        <div class="flex text-xs justify-end">
+        <span v-if="loginError" class="text-red-500">{{ loginError }}</span>
+        <div class="flex text-sm justify-center">
             <p>Don't have an account yet?</p>
             <router-link to="/signup" class="text-blue-500 hover:text-blue-600 mx-1">Sign Up</router-link>
         </div>
@@ -37,17 +38,18 @@
 import {
     ref
 } from 'vue';
-// import {
-//     useAuthStore
-// } from '../stores/auth';
 import {
     useLogin
 } from '../composables/useLoginSignup';
 
 import PopupModal from './PopupModal.vue';
-// import {
-//     useRouter
-// } from 'vue-router';
+import {
+    useAuthStore
+} from '@/stores/auth';
+import {
+    storeToRefs
+} from 'pinia';
+
 export default {
     name: 'LoginForm',
     components: {
@@ -62,17 +64,14 @@ export default {
             showPassword,
             togglePasswordVisibility
         } = useLogin();
-
+        const authStore = useAuthStore();
+        const {
+            loginError
+        } = storeToRefs(authStore)
         const showModal = ref(false);
         const modalTitle = ref('');
         const modalMessage = ref('');
         const modalType = ref('success');
-        // const router = useRouter();
-        // const authStore = useAuthStore();
-        // const {
-
-        // } = authStore
-
         const customSubmitSignup = async () => {
             const result = await submitLogin();
             if (result) {
@@ -96,6 +95,7 @@ export default {
             modalMessage,
             modalType,
             modalTitle,
+            loginError,
             handleModalConfirm
         };
     },

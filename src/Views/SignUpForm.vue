@@ -55,13 +55,14 @@
             <span v-if="!isSubmitting">Sign Up</span>
             <div v-else class="button-loader"></div>
         </button>
-        <div class="flex text-xs justify-end">
+        <span v-if="signupError" class="text-red-500">{{ signupError }}</span>
+
+        <div class="flex text-sm justify-center">
             <p>Do you have already account?</p>
             <router-link to="/login" class="text-blue-500 hover:text-blue-200 mx-1">Click here</router-link>
         </div>
     </form>
     <PopupModal :isVisible="showModal" :title="modalTitle" :message="modalMessage" :type="modalType" @confirmed="handleModalConfirm" />
-
 </div>
 </template>
 
@@ -80,6 +81,9 @@ import PopupModal from './PopupModal.vue';
 import {
     useRouter
 } from 'vue-router';
+import {
+    storeToRefs
+} from 'pinia';
 
 export default {
     name: 'SignUpForm',
@@ -98,20 +102,21 @@ export default {
             toggleConfirmPasswordVisibility
         } = useSignup();
 
-        const roles = ref([]);
         const showModal = ref(false);
         const modalTitle = ref('');
         const modalMessage = ref('');
         const modalType = ref('success');
-
         const router = useRouter();
         const authStore = useAuthStore();
+        const {
+            signupError, roles
+        } = storeToRefs(authStore)
         const {
             fetchRoles
         } = authStore
         
         onMounted(async () => {
-            roles.value = await fetchRoles();
+            await fetchRoles();
         });
 
         const customSubmitSignup = async () => {
@@ -122,12 +127,6 @@ export default {
                 modalType.value = 'success';
                 showModal.value = true;
             }
-            // else if(authStore.error) {
-            //     modalTitle.value = "Failed";
-            //     modalMessage.value = authStore.error;
-            //     modalType.value = 'error';
-            //     showModal.value = true;
-            // }
         };
 
         const handleModalConfirm = () => {
@@ -140,6 +139,7 @@ export default {
 
         return {
             form,
+            signupError,
             errors,
             isSubmitting,
             showPassword,

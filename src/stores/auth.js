@@ -6,7 +6,7 @@ const apiUrl = process.env.VUE_APP_API_BASE_URL;
 export const useAuthStore = defineStore('auth', () => {
     const state = reactive({
         user: null,
-        token: null,
+        userToken: null,
         roles: [],
         signupError: null,
         loginError: null,
@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await axios.post(`${apiUrl}/user/register`, formData);
             state.user = response.data.user;
-            state.token = response.data.token;
+            state.userToken = response.data.token;
             localStorage.setItem('user', JSON.stringify(response.data.user));
             localStorage.setItem('token', response.data.token);
         } catch (err) {
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await axios.post(`${apiUrl}/user/login`, formData);
             state.user = response.data.user;
-            state.token = response.data.token;
+            state.userToken = response.data.token;
             localStorage.setItem('user', JSON.stringify(response.data.user));
             localStorage.setItem('token', response.data.token);
         } catch (err) {
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const logout = () => {
         state.user = null;
-        state.token = null;
+        state.userToken = null;
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     };

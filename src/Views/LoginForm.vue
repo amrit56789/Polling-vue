@@ -29,7 +29,7 @@
             <router-link to="/signup" class="text-blue-500 hover:text-blue-600 mx-1">Sign Up</router-link>
         </div>
     </form>
-    <PopupModal :isVisible="showModal" :title="modalTitle" :message="modalMessage" :type="modalType"  />
+    <PopupModal :isVisible="showModal" :title="modalTitle" :message="modalMessage" :type="modalType" @confirmed="handleModalConfirm" />
 
 </div>
 </template>
@@ -80,6 +80,9 @@ export default {
             }
         };
 
+        const handleModalConfirm = () => {
+                showModal.value = false;
+        };
         return {
             form,
             errors,
@@ -90,6 +93,7 @@ export default {
             modalType,
             modalTitle,
             loginError,
+            handleModalConfirm,
             ...useToggleVisibility()
         };
     },

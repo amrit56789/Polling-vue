@@ -49,9 +49,6 @@ import {
 import {
     storeToRefs
 } from 'pinia';
-import {
-    useRouter
-} from 'vue-router';
 
 export default {
     name: 'LoginForm',
@@ -65,7 +62,6 @@ export default {
             isSubmitting,
             submitLogin,
         } = useLogin();
-        const router = useRouter();
         const authStore = useAuthStore();
         const {
             loginError

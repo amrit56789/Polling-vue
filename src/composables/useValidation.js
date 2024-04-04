@@ -48,28 +48,24 @@ export function useValidation() {
     };
 
     const validateForm = (form, errors, isLogin = false) => {
-        console.log(isLogin, )
         let isValid = true;
         Object.keys(errors.value).forEach((key) => (errors.value[key] = ''));
 
-        errors.value.email = validateEmail(form.value.email);
-        errors.value.password = isLogin ? validatePasswordPresence(form.value.password) : validatePasswordComplexity(form.value.password);
+        errors.value.email = validateEmail(form.value?.email);
+        errors.value.password = isLogin ? validatePasswordPresence(form.value?.password) : validatePasswordComplexity(form.value.password);
         if (!isLogin) {
-            errors.value.firstName = validateFirstName(form.value.firstName);
-            errors.value.lastName = validateLastName(form.value.lastName);
-            errors.value.confirmPassword = validateConfirmPassword(form.value.password, form.value.confirmPassword);
-            errors.value.roleId = validateRole(form.value.roleId);
+            errors.value.firstName = validateFirstName(form.value?.firstName);
+            errors.value.lastName = validateLastName(form.value?.lastName);
+            errors.value.confirmPassword = validateConfirmPassword(form.value?.password, form.value?.confirmPassword);
+            errors.value.roleId = validateRole(form.value?.roleId);
         }
 
         isValid = !Object.values(errors.value).some(error => error !== '');
-
         return isValid;
     };
 
     return {
         validateForm,
         validateEmail,
-        validatePasswordPresence,
-        validatePasswordComplexity,
     };
 }

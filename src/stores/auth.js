@@ -1,62 +1,78 @@
+import { reactive, toRef } from 'vue';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 import axios from 'axios';
 
+const apiUrl = process.env.VUE_APP_API_BASE_URL;
+
 export const useAuthStore = defineStore('auth', () => {
-    const user = ref(JSON.parse(localStorage.getItem('user')) || null);
-    const token = ref(localStorage.getItem('token') || null);
-    const error = ref(null);
-    const roles = ref([]);
+    const state = reactive({
+        user: null,
+        token: null,
+        roles: [],
+        signupError: null,
+        loginError: null,
+    });
 
-    function resetError() {
-        error.value = null;
-    }
+    const resetError = () => {
+        state.signupError = null;
+        state.loginError = null;
+    };
 
-    async function signUp(formData) {
+    const signUp = async (formData) => {
         resetError();
         try {
-            const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/user/register`, formData);
-            user.value = response.data;
-
-        } catch (err) {
-            error.value = err.response && err.response.data && err.response.data.errors ? err.response.data.errors : 'Signup failed';
-            console.error('Signup error:', error.value);
-        } 
-    }
-
-    async function login(formData) {
-        try {
-            const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/user/login`, formData);
-            user.value = response.data.user; 
-            token.value = response.data.token; 
+            const response = await axios.post(`${apiUrl}/user/register`, formData);
+            state.user = response.data.user;
+            state.token = response.data.token;
             localStorage.setItem('user', JSON.stringify(response.data.user));
             localStorage.setItem('token', response.data.token);
-
         } catch (err) {
-            user.value = null;
-            token.value = null; 
+            console.log(err.response?.data);
+            state.signupError = err.response?.data || 'Signup failed';
+            throw new Error(state.signupError);
+        }
+    };
+
+    const login = async (formData) => {
+        resetError();
+        try {
+            const response = await axios.post(`${apiUrl}/user/login`, formData);
+            state.user = response.data.user;
+            state.token = response.data.token;
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            localStorage.setItem('token', response.data.token);
+        } catch (err) {
             localStorage.removeItem('user');
             localStorage.removeItem('token');
-            error.value = err.response && err.response.data && err.response.data.message ? err.response.data.message : 'Login failed.';
-            console.error('Login error:', error.value);
+            state.loginError = err.response?.data?.message || 'Login failed.';
+            console.log('Login error:', state.loginError);
             throw err;
-        } 
-    }
-    async function fetchRoles() {
-        try {
-            const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/role/list`);
-            roles.value = response.data; 
-        } catch (err) {
-            console.error('Failed to fetch roles:', err);
         }
-    }
+    };
 
-    function logout() {
-        user.value = null;
-        token.value = null; 
+    const fetchRoles = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VUE_APP_API_BASE_URL}/role/list`);
+            state.roles = response.data;
+        } catch (err) {
+            console.log('Failed to fetch roles:', err);
+            throw err;
+        }
+    };
+
+    const logout = () => {
+        state.user = null;
+        state.token = null;
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-    }
+    };
 
-    return { user, token, error, roles, resetError, signUp, login, logout, fetchRoles };
+    return {
+        ...toRef(state),
+        resetError,
+        signUp,
+        login,
+        logout,
+        fetchRoles,
+    };
 });

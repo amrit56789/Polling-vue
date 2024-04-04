@@ -1,11 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import SignUpForm from '../Views/SignUpForm.vue';
-import LoginForm from "../Views/LoginForm.vue";
+import LoginForm from '../Views/LoginForm.vue';
 
 const routes = [
     {
         path: '/',
-        redirect: '/signup'
+        redirect: '/login'
     },
     {
         path: '/signup',

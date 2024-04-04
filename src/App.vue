@@ -5,8 +5,6 @@
               <h1 class="text-xl">Polling App</h1>
           </div>
           <div class="flex justify-end mr-10 text-xl">
-              <router-link to="/signup" class="text-white hover:text-blue-200 mr-4">SignUp</router-link>
-              <router-link to="/login" class="text-white hover:text-blue-200">Login</router-link>
           </div>
       </div>
   </nav>

@@ -72,7 +72,8 @@ import {
     onMounted
 } from 'vue';
 import {
-    useSignup
+    useSignup,
+    useToggleVisibility
 } from '../composables/useLoginSignup';
 import {
     useAuthStore
@@ -84,7 +85,6 @@ import {
 import {
     storeToRefs
 } from 'pinia';
-
 export default {
     name: 'SignUpForm',
     components: {
@@ -96,10 +96,6 @@ export default {
             errors,
             isSubmitting,
             submitSignup,
-            showPassword,
-            togglePasswordVisibility,
-            showConfirmPassword,
-            toggleConfirmPasswordVisibility
         } = useSignup();
 
         const showModal = ref(false);
@@ -109,12 +105,13 @@ export default {
         const router = useRouter();
         const authStore = useAuthStore();
         const {
-            signupError, roles
+            signupError,
+            roles
         } = storeToRefs(authStore)
         const {
             fetchRoles
         } = authStore
-        
+
         onMounted(async () => {
             await fetchRoles();
         });
@@ -142,17 +139,14 @@ export default {
             signupError,
             errors,
             isSubmitting,
-            showPassword,
-            togglePasswordVisibility,
-            showConfirmPassword,
-            toggleConfirmPasswordVisibility,
             roles,
             submitSignup: customSubmitSignup,
             showModal,
             modalMessage,
             modalType,
             modalTitle,
-            handleModalConfirm
+            handleModalConfirm,
+            ...useToggleVisibility()
         };
     },
 };

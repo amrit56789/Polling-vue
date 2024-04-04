@@ -1,26 +1,28 @@
 <template>
-  <nav class="bg-blue-500 p-4 text-white shadow-md mb-3">
-      <div class="container mx-auto flex justify-between items-center">
-          <div> 
-              <h1 class="text-xl">Polling App</h1>
-          </div>
-          <div class="flex justify-end mr-10 text-xl">
-          </div>
-      </div>
-  </nav>
-  <router-view></router-view>
+<nav class="bg-blue-500 p-4 text-white shadow-md mb-3">
+    <div class="container mx-auto flex justify-between items-center">
+        <div>
+            <h1 class="text-xl">Polling App</h1>
+        </div>
+        <div class="flex justify-end mr-10 text-xl">
+        </div>
+    </div>
+</nav>
+<router-view></router-view>
 </template>
 
 <script>
 export default {
-  name: 'App',
-  components: {}
+    name: 'App',
+    components: {}
 }
 </script>
+
 <style>
-body{
-  background-color: #e3e4eb;
+body {
+    background-color: #e3e4eb;
 }
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

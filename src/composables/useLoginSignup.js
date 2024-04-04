@@ -2,18 +2,22 @@ import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { useValidation } from './useValidation';
 
-function useToggleVisibility() {
-    const isVisible = ref(false);
-    const toggleVisibility = () => {
-        isVisible.value = !isVisible.value;
+export function useToggleVisibility() {
+    const showPassword = ref(false);
+    const showConfirmPassword = ref(false);
+    const togglePasswordVisibility = () => {
+        showPassword.value = !showPassword.value;
     };
-    return { isVisible, toggleVisibility };
+    const toggleConfirmPasswordVisibility = () => {
+        showConfirmPassword.value = !showConfirmPassword.value;
+    };
+    return { showPassword, togglePasswordVisibility, showConfirmPassword, toggleConfirmPasswordVisibility};
 }
+
 
 export function useLogin() {
     const authStore = useAuthStore();
     const { validateForm } = useValidation();
-    const { isVisible: showPassword, toggleVisibility: togglePasswordVisibility } = useToggleVisibility();
 
     const form = ref({
         email: '',
@@ -49,16 +53,13 @@ export function useLogin() {
         errors,
         isSubmitting,
         submitLogin,
-        showPassword,
-        togglePasswordVisibility,
     };
 }
 
 export function useSignup() {
     const authStore = useAuthStore();
     const { validateForm } = useValidation();
-    const { isVisible: showPassword, toggleVisibility: togglePasswordVisibility } = useToggleVisibility();
-    const { isVisible: showConfirmPassword, toggleVisibility: toggleConfirmPasswordVisibility } = useToggleVisibility();
+
     const form = ref({
         firstName: '',
         lastName: '',
@@ -102,9 +103,6 @@ export function useSignup() {
         errors,
         isSubmitting,
         submitSignup,
-        showPassword,
-        togglePasswordVisibility,
-        showConfirmPassword,
-        toggleConfirmPasswordVisibility,
+     
     };
 }

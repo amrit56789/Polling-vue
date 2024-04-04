@@ -4,28 +4,15 @@ export function useValidation() {
         return re.test(email.toLowerCase()) ? '' : 'A valid email is required.';
     };
 
-    const validateFirstName = (firstName) => {
-        if (!firstName) return 'First Name is required.';
-        if (firstName.length < 3) return 'First Name must be at least 3 characters.';
+    const validateField = (value, field, limit) => {
+        if (!value) return `${field} is required.`;
+        if (limit && value.length < limit) return `${field} must be at least ${limit} characters.`;
         return '';
-    };
-
-    const validateLastName = (lastName) => {
-        if (!lastName) return 'Last Name is required.';
-        if (lastName.length < 3) return 'Last Name must be at least 3 characters.';
-        return '';
-    };
-
-    const validatePasswordPresence = (password) => {
-        return password ? '' : 'Password is required.';
     };
 
     const validatePasswordComplexity = (password) => {
-        let errorMessage = validatePasswordPresence(password); 
+        let errorMessage = validateField(password, "Password", 8); 
         if (!errorMessage) { 
-            if (password.length < 8) {
-                errorMessage += 'Password must be at least 8 characters long. ';
-            }
             if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
                 errorMessage += 'Password must contain at least one special character. ';
             }
@@ -43,20 +30,16 @@ export function useValidation() {
         return password === confirmPassword ? '' : 'Passwords must match.';
     };
 
-    const validateRole = (roleId) => {
-        return roleId ? '' : 'Role is required.';
-    };
-
     const validateForm = (form, errors, isLogin = false) => {
         let isValid = true;
         Object.keys(errors.value).forEach((key) => (errors.value[key] = ''));
         errors.value.email = validateEmail(form.value?.email);
-        errors.value.password = isLogin ? validatePasswordPresence(form.value?.password) : validatePasswordComplexity(form.value.password);
+        errors.value.password = isLogin ? validateField(form.value?.password, "Password") : validatePasswordComplexity(form.value.password);
         if (!isLogin) {
-            errors.value.firstName = validateFirstName(form.value?.firstName);
-            errors.value.lastName = validateLastName(form.value?.lastName);
+            errors.value.firstName = validateField(form.value?.firstName, "First Name", 3);
+            errors.value.lastName = validateField(form.value?.lastName, "Last Name", 3);
             errors.value.confirmPassword = validateConfirmPassword(form.value?.password, form.value?.confirmPassword);
-            errors.value.roleId = validateRole(form.value?.roleId);
+            errors.value.roleId = validateField(form.value?.roleId, "Role");
         }
         isValid = !Object.values(errors.value).some(error => error !== '');
         return isValid;

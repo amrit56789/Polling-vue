@@ -29,7 +29,7 @@
             <router-link to="/signup" class="text-blue-500 hover:text-blue-600 mx-1">Sign Up</router-link>
         </div>
     </form>
-    <PopupModal :isVisible="showModal" :title="modalTitle" :message="modalMessage" :type="modalType" @confirmed="handleModalConfirm" />
+    <PopupModal :isVisible="showModal" :title="modalTitle" :message="modalMessage" :type="modalType"  />
 
 </div>
 </template>
@@ -39,16 +39,19 @@ import {
     ref
 } from 'vue';
 import {
-    useLogin
+    useLogin, useToggleVisibility
 } from '../composables/useLoginSignup';
 
 import PopupModal from './PopupModal.vue';
 import {
     useAuthStore
-} from '@/stores/auth';
+} from '../stores/auth';
 import {
     storeToRefs
 } from 'pinia';
+import {
+    useRouter
+} from 'vue-router';
 
 export default {
     name: 'LoginForm',
@@ -61,9 +64,8 @@ export default {
             errors,
             isSubmitting,
             submitLogin,
-            showPassword,
-            togglePasswordVisibility
         } = useLogin();
+        const router = useRouter();
         const authStore = useAuthStore();
         const {
             loginError
@@ -81,22 +83,18 @@ export default {
                 showModal.value = true;
             }
         };
-        const handleModalConfirm = () => {
-            showModal.value = false;
-        };
+
         return {
             form,
             errors,
             isSubmitting,
             submitLogin: customSubmitLogin,
-            showPassword,
-            togglePasswordVisibility,
             showModal,
             modalMessage,
             modalType,
             modalTitle,
             loginError,
-            handleModalConfirm
+            ...useToggleVisibility()
         };
     },
 };

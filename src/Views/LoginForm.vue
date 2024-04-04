@@ -72,7 +72,7 @@ export default {
         const modalTitle = ref('');
         const modalMessage = ref('');
         const modalType = ref('success');
-        const customSubmitSignup = async () => {
+        const customSubmitLogin = async () => {
             const result = await submitLogin();
             if (result) {
                 modalTitle.value = "Success";
@@ -88,7 +88,7 @@ export default {
             form,
             errors,
             isSubmitting,
-            submitLogin: customSubmitSignup,
+            submitLogin: customSubmitLogin,
             showPassword,
             togglePasswordVisibility,
             showModal,

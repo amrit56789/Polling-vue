@@ -1,33 +1,57 @@
 <template>
-<nav class="bg-blue-500 p-4 text-white shadow-md mb-3">
-    <div class="container mx-auto flex justify-between items-center">
-        <div>
-            <h1 class="text-xl">Polling App</h1>
-        </div>
-        <div class="flex justify-end mr-10 text-xl">
-        </div>
-    </div>
-</nav>
-<router-view></router-view>
+<div>
+     <nav class="" v-if="isLoggedIn && !isLoginOrSignupPage">
+          <NavbarHeader />
+     </nav>
+     <router-view></router-view>
+</div>
 </template>
 
+  
 <script>
+import NavbarHeader from "./Views/NavbarHeader.vue" // Adjust path as necessary
+import {
+     useAuthStore
+} from './stores/auth';
+import {
+     computed
+} from 'vue';
+import {
+     useRoute
+} from 'vue-router';
+
 export default {
-    name: 'App',
-    components: {}
-}
+     name: 'App',
+     components: {
+          NavbarHeader,
+     },
+     setup() {
+          const authStore = useAuthStore();
+          const isLoggedIn = computed(() => authStore.isLoggedIn);
+          const route = useRoute();
+
+          const isLoginOrSignupPage = computed(() => {
+               return ['login', 'signup'].includes(route.name);
+          });
+
+          return {
+               isLoggedIn,
+               isLoginOrSignupPage,
+          };
+     },
+};
 </script>
 
 <style>
 body {
-    background-color: #e3e4eb;
+     background-color: #e3e4eb;
 }
 
 #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
+     font-family: Avenir, Helvetica, Arial, sans-serif;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+     text-align: center;
+     color: #2c3e50;
 }
 </style>

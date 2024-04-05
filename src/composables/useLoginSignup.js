@@ -79,14 +79,14 @@ export function useSignup() {
     });
 
     const isSubmitting = ref(false);
-    const submitSignup = async () => {
+    const submitSignup = async (endPoint) => {
         isSubmitting.value = true;
         if (!validateForm(form, errors, false)) {
             isSubmitting.value = false;
             return false;
         }
         try {
-            await authStore.signUp(form.value);
+            await authStore.signUp(form.value, endPoint);
             Object.keys(form.value).forEach(key => form.value[key] = '');
             return true;
         } catch (error) {

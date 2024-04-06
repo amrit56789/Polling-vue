@@ -1,4 +1,3 @@
-// useUserList.js
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 

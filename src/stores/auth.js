@@ -19,9 +19,16 @@ export const useAuthStore = defineStore('auth', () => {
         page: 1,
         limit: 4,
         route: null,
-        totalPages: 0
+        totalPages: 0,
+        currentPoll: null,
     });
+    const setCurrentPoll = (pollData) => {
+        state.currentPoll = pollData;
+    };
 
+    const getCurrentPoll = () => {
+        return state.currentPoll;
+    };
     const router = useRouter();
 
     const resetError = () => {
@@ -114,7 +121,6 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const getUserList = async (page, limit) => {
-        console.log(page, limit)
         if (!state.userToken) {
             console.error("Authentication token not found.");
             return;
@@ -134,6 +140,21 @@ export const useAuthStore = defineStore('auth', () => {
             state.userListError = err.response?.data?.message || 'Failed to fetch polls.';
         }
     }
+
+    const addPoll = async (payload) =>{
+        try {
+            const response = await axios.post(`${apiUrl}/poll/add`, payload, {
+                headers: {
+                    token: state.userToken
+                }
+            });
+            console.log(response.data)
+        } catch (err) {
+            console.error('Failed to fetch polls:', err.response?.data);
+            state.userListError = err.response?.data?.message || 'Failed to fetch polls.';
+        }
+    }
+    
     return {
         ...toRefs(state),
         resetError,
@@ -143,6 +164,9 @@ export const useAuthStore = defineStore('auth', () => {
         fetchRoles,
         isLoggedIn,
         getPollList,
-        getUserList
+        getUserList,
+        addPoll,
+        setCurrentPoll,
+        getCurrentPoll,
     };
 });

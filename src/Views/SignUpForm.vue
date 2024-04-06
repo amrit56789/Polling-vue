@@ -1,5 +1,5 @@
 <template>
-<div class="flex justify-center gap-10 mt-32">
+<div class="flex justify-center gap-10 mt-4">
      <form @submit.prevent="submitSignup" class=" border-2 border-slate-200 rounded-xl space-y-4 p-4 shadow-lg flex flex-col justify-between">
           <h1 class="font-bold text-2xl text-center">{{formTitle}}</h1>
           <div class="field">

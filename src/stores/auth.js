@@ -16,8 +16,6 @@ export const useAuthStore = defineStore('auth', () => {
         loginError: null,
         pollError: null,
         userListError: null,
-        page: 1,
-        limit: 4,
         route: null,
         totalPages: 0,
         currentPoll: null,
@@ -49,7 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
                     }
                 });
             } else {
-                response = await axios.get(`${apiUrl}/user/register`, formData)
+                response = await axios.post(`${apiUrl}/user/register`, formData)
             }
             state.user = response.data.user;
             state.userToken = response.data.token;
@@ -94,20 +92,20 @@ export const useAuthStore = defineStore('auth', () => {
     const logout = () => {
         state.user = null;
         state.userToken = null;
-        localStorage.removeItem('voter');
+        localStorage.removeItem('votedPolls');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         router.push('/login');
     };
 
-    const getPollList = async () => {
+    const getPollList = async (currentPage, limit) => {
         if (!state.userToken) {
             console.error("Authentication token not found.");
             return;
         }
         try {
-            const response = await axios.get(`${apiUrl}/poll/list/${state.page}?limit=${state.limit}`, {
+            const response = await axios.get(`${apiUrl}/poll/list/${currentPage}?limit=${limit}`, {
                 headers: {
                     token: state.userToken
                 }
@@ -141,17 +139,113 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    const addPoll = async (payload) =>{
+    const addEditPoll = async (pollId, payload, isEdit) => {
         try {
-            const response = await axios.post(`${apiUrl}/poll/add`, payload, {
+            if (isEdit) {
+                await axios.put(`${apiUrl}/poll/${pollId}`, payload, {
+                    headers: {
+                        token: state.userToken
+                    }
+                });
+            } else {
+                await axios.post(`${apiUrl}/poll/add`, payload, {
+                    headers: {
+                        token: state.userToken
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Failed to fetch polls:', err.response?.data);
+            state.userListError = err.response?.data?.message || 'Failed to fetch polls.';
+        }
+    }
+
+    const deletePollOptions = async (optionId) => {
+        try {
+            const result = await axios.delete(`${process.env.VUE_APP_API_BASE_URL}/option/delete/${optionId}`, {
                 headers: {
                     token: state.userToken
                 }
             });
-            console.log(response.data)
+            return result
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    async function updateOption(optionId, title) {
+        try {
+            const response = await axios.put(`${process.env.VUE_APP_API_BASE_URL}/option/edit/${optionId}`,
+                { optionTitle: title },
+                {
+                    headers: {
+                        token: state.userToken
+                    }
+                }
+            );
+            return response.data;
         } catch (err) {
             console.error('Failed to fetch polls:', err.response?.data);
-            state.userListError = err.response?.data?.message || 'Failed to fetch polls.';
+        }
+
+    }
+
+    const updateNewOptionInExistingPoll = async (pollId, payload) => {
+        try {
+            const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/poll/addPollOption/${pollId}`,
+                payload,
+                {
+                    headers: {
+                        token: state.userToken
+                    }
+                }
+            );
+            return response.data;
+        } catch (err) {
+            console.error('Failed to fetch polls:', err.response?.data);
+        }
+
+    }
+
+    const deletePolls = async (pollId) => {
+        try {
+            const response = await axios.delete(`${process.env.VUE_APP_API_BASE_URL}/poll/${pollId}`,
+                {
+                    headers: {
+                        token: state.userToken
+                    }
+                }
+            );
+            return response
+        } catch (err) {
+            console.error('Failed to fetch polls:', err.response?.data);
+        }
+    }
+
+    const votes = async (payload) => {
+        try {
+            const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/vote/count`, payload,
+                {
+                    headers: {
+                        token: state.userToken
+                    }
+                }
+            );
+            return response
+        } catch (err) {
+            console.error('Failed to fetch polls:', err.response?.data);
+        }
+    }
+
+    const getPollsVotes = async (pollId) => {
+        try {
+            const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/poll/${pollId}`, {
+                headers: {
+                    token: state.userToken 
+                }
+            });
+            return response; 
+        } catch (err) {
+            console.error('Failed to fetch polls:', err.response?.data);
         }
     }
     
@@ -165,8 +259,14 @@ export const useAuthStore = defineStore('auth', () => {
         isLoggedIn,
         getPollList,
         getUserList,
-        addPoll,
+        addEditPoll,
         setCurrentPoll,
         getCurrentPoll,
+        deletePollOptions,
+        updateOption,
+        updateNewOptionInExistingPoll,
+        deletePolls,
+        votes,
+        getPollsVotes
     };
 });

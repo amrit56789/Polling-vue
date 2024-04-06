@@ -1,7 +1,7 @@
 <template>
-<nav v-if="isLoggedIn" class="bg-blue-600 p-4 text-white shadow-lg">
+<nav v-if="isLoggedIn" class="bg-blue-600 p-1 pb-2 text-white shadow-lg mb-4">
      <div class="container mx-auto flex justify-between items-center">
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-8 ml-4">
                <router-link to="/polls" class="text-white hover:text-blue-300 transition duration-150 ease-in-out">Polls</router-link>
                <template v-if="user.roleId === 1">
                     <router-link to="/add-poll" class="text-white hover:text-blue-300 transition duration-150 ease-in-out">Add Poll</router-link>
@@ -9,7 +9,7 @@
                     <router-link to="/users-list" class="text-white hover:text-blue-300 transition duration-150 ease-in-out">List Users</router-link>
                </template>
           </div>
-          <div class="relative">
+          <div class="relative mr-4">
                <button @click="toggleDropdown" class="flex items-center focus:outline-none bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow">
                  <span class="h-10 w-10 rounded-full overflow-hidden bg-gray-200">
                    <svg class="h-full w-full text-gray-400" fill="currentColor" viewBox="0 0 24 24">
